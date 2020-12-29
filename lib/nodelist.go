@@ -5,14 +5,14 @@ import (
 	"time"
 )
 
-//NodeList
+//NodeList user-action顶部
 type NodeList struct {
 	TopNode *Node
-	rwm sync.RWMutex
+	rwm     sync.RWMutex
 }
 
-
-func (nl *NodeList) Add(t time.Time) {
+//Add obj user action append time
+func (nl *NodeList) add(t time.Time) {
 	now := t.Unix()
 
 	nl.rwm.Lock()
@@ -21,7 +21,6 @@ func (nl *NodeList) Add(t time.Time) {
 	topNode := joinList(nl.TopNode, now)
 	nl.TopNode = topNode
 }
-
 
 //joinList List 左边的value 总小于右边的value，然后返回最右边得到node
 func joinList(n *Node, t int64) *Node {
@@ -33,12 +32,12 @@ func joinList(n *Node, t int64) *Node {
 	}
 
 	if t > n.Value {
-		newNode.LeftTree  =  n
+		newNode.LeftTree = n
 		return newNode
 	}
 
 	if t == topNode.Value {
-		n.Size += 1
+		n.Size++
 		return topNode
 	}
 
@@ -52,11 +51,27 @@ func joinList(n *Node, t int64) *Node {
 			break
 		}
 		if t == n.LeftTree.Value {
-			n.LeftTree.Size += 1
+			n.LeftTree.Size++
 			break
 		}
 		n = n.LeftTree
 	}
 
 	return topNode
+}
+
+func (nl *NodeList) getCountInTime(endValue int64) int64 {
+	count := int64(0)
+	node := nl.TopNode
+	for {
+		if node == nil {
+			return count
+		}
+
+		if node.Value < endValue {
+			return count
+		}
+		count += int64(node.Size)
+		node = node.LeftTree
+	}
 }
