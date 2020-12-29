@@ -8,7 +8,7 @@ import (
 //NodeList
 type NodeList struct {
 	TopNode *Node
-	rwm *sync.RWMutex
+	rwm sync.RWMutex
 }
 
 
