@@ -39,7 +39,7 @@ type GetCountBody struct {
 func GetActionCount(c *gin.Context) {
 	var body GetCountBody
 	c.Bind(&body)
-	count, err := service.GetCount(body.UID, body.Action, time.Duration(body.Minute))
+	count, err := service.GetCount(body.UID, body.Action, time.Duration(body.Minute*60))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"err": err.Error()})
 		return
